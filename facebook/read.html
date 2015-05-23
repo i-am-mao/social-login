@@ -1,0 +1,229 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>facebookソーシャルログインの実装</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="wrap">
+	<h1>facebookソーシャルログインの実装</h1>
+	<hr>
+	<div id="catalog">
+		<h2>目録</h2>
+		<ul>
+			<li><a href="#one">必要なファイル</a></li>
+			<li><a href="#two">facebookアプリの作成</a></li>
+			<li><a href="#three">facebooklogin.phpを編集</a></li>
+			<li><a href="#four">リダイレクト先ページの作成</a></li>
+			<li><a href="#five">実行</a></li>
+			<li><a href="#six">取得できる値</a></li>
+			<li><a href="#seven">動かないとき</a></li>
+				<ul id="child">
+					<li><a href="#seven1">facebook.phpは読み込まれていますか？</a></li>
+					<li><a href="#seven2">文字化けするときは</a></li>
+					<li><a href="#seven3">アプリ認証後画面が真っ白になる</a></li>
+				</ul>
+		</ul>
+	</div>
+	<hr>
+	<div id="one" class="text">
+		<h2>１．必要なファイル</h2>
+		<ul>
+			<li>facebook/facebooklogin.php</li>
+			<li>facebook/src/facebook.php</li>
+			<li>facebook/src/base_facebook.php</li>
+		</ul>
+		
+		<p>この中で実際に編集するのは、<strong>facebooklogin.php</strong>のみです</p>
+	</div>
+	<hr>
+	
+	<div id="two" class="text">
+		<h2>２．facebookアプリの作成</h2>
+		
+		<h3>2-1.</h3>
+		<p>
+			ソーシャルログインの実装にはfacebookのアプリを用意する必要があります<br>
+			<a href="https://developers.facebook.com/" target="_blank">https://developers.facebook.com/</a>にアクセス<br> 
+			<img src="image/2-1.gif" width="600" height="543">
+		</p>
+		
+		<h3>2-2</h3>
+		<p>
+			"App"をクリックし、次に進みます<br>
+			<img src="image/2-2.gif" width="600" height="123">
+		<p>
+		
+		<h3>2-3</h3>
+		<p>
+			"+新しいアプリを作成"をクリックし、次に進みます<br>
+			<img src="image/2-3.gif" width="432" height="315">
+		<p>
+		
+		<h3>2-4</h3>
+		<p>
+			必要事項を記入していきます<br>
+			<img src="image/2-4.gif" width="600" height="202">
+			<ul>
+				<li>アプリ名：作成するアプリの名前を入力します</li>
+				<li>アプリの名前空間：アプリページのURLを入力します（省略可）</li>
+				<li>アプリのカテゴリ：適当なジャンルを選びましょう</li>
+			</ul>			
+		<p>
+		
+		<h3>2-5</h3>
+		<P>
+			セキュリティチェック。表示された文字を入力して続行します<br>
+			<img src="image/2-5.gif" width="600" height="301">
+		</P>
+		
+		<h3>2-6</h3>
+		<p id="ninoroku">
+			アプリが完成しました！<br>
+			表示されている<strong>APP ID</strong>と<strong>App Secret</strong>は重要なキーとなります<br>
+			<img src="image/2-6.gif" width="600" height="162">
+		</p>
+		
+		<h3>2-7</h3>
+		<p>
+		ソーシャルログインに必要な設定を行っていきます<br>
+		まず<b>サンドボックスモードの状態</b>を確認しましょう<br>		
+		サンドボックスモードがオンになっていると、非公開の状態となるので<b>必ずオフ</b>にします
+		<img src="image/2-7.gif" width="600" height="350">
+		</p>
+		
+		<h3>2-8</h3>
+		<p>
+		次に、今回はWEBサイト上にFacebookアプリを作るので、<br>
+		"Facebookでログインが可能なウェイブサイト"にソーシャルログインを設置したいサイトのＵＲＬを入力して設定は以上となります<br>
+		<img src="image/2-8.gif" width="600" height="398">	
+		</p>
+	</div>
+
+	<hr>
+
+	<div id="three" class="text">
+		<h2>３．facebooklogin.phpを編集</h2>
+		
+		<h3>3-1</h3>
+		<p>
+			facebooklogin.phpはログインボタンを押して、このような画面が表示されるファイルです<br>
+			<img src="image/3-1.gif" width="600" height="376">
+		</p>
+		<p>
+			facebooklogin.phpに先ほど<a href="#ninoroku">2-6</a>で表示されたApp IDとApp Secretを入力します<br>
+			<img src="image/3-1-2.gif" width="516" height="174">
+		</p>
+		
+		<h3>3-2</h3>
+		<p>
+			次にfacebookの承認後にリダイレクトされるページを指定します<br />
+			（実際に自分のサイトでfacebookのユーザー名やプロフィール写真を表示させるページ）<br>
+			http://～から入力します<br>
+			<img src="image/3-2.gif" width="420" height="57">
+		</p>
+	</div>
+	
+	<hr>
+	
+	<div id="four" class="text">
+		<h2>４．リダイレクト先ページの作成</h2>
+		<p>前項で入力した、facebookユーザー名などを表示させたいページに以下のＰＨＰを書き込みます<br>
+			セッションを利用しているので他のページへ移動しても表示させることが出来ます
+		</p>
+<pre>
+&lt;?php
+session_start();
+echo &quot;ようこそ&quot; . $_SESSION['username'].&quot;さん！&lt;br /&gt;&quot;;
+echo &quot;&lt;img src=&quot; . $_SESSION['picture'].&quot;&gt;&quot;;
+?&gt;
+</pre>
+	</div>
+	
+	<hr>
+	
+	<div id="five" class="text">
+		<h2>５．実行</h2>
+		<p>	実行すると「facebookﾛｸﾞｲﾝ」と表示され、クリックするとFacebook側からアクセスの許可を求められます。<br>
+			承認するとリダイレクトし、自分のサイトにユーザー名とプロフィール写真が表示されれば完成です！<br>
+		</p>
+	</div>
+	
+	<hr>
+	
+	<div id="six" class="text">
+		<h2>６．取得できる値</h2>
+		<p>ユーザー名、プロフィール写真の他にも以下の値が取得できます</p>
+<pre>
+取得できる値の一部
+
+ID：$user_profile['id']
+ファーストネーム： $user_profile['first_name']
+ラストネーム：$user_profile['last_name']
+URL：$user_profile['link']
+性別：$user_profile['gender']
+最終更新日：$user_profile['updated_time']</pre>
+	</div>
+	
+	<div id="seven" class="text">
+		<h2>７．動かないとき</h2>
+		
+		<h3 id="seven1">7-1</h3>
+		<p>
+		facebook.phpはきちんと読み込まれていますか？<br>
+		facebooklogin.phpの７行目付近、ソーシャルログイン実装において必須となるファイルが正しく<br>
+		読み込まれていないと当然動きません<br />	
+		<img src="image/7-1.gif" width="438" height="171">			
+		</p>
+		
+		<h3 id="seven2">7-2</h3>
+		<P>
+		文字化けする場合はfacebooklogin.phpの以下の部分を削除すると解消する場合があります<br>
+<pre>
+１行目付近
+&lt;?php
+header(&quot;Content-Type: text/html; charset=Shift_JIS&quot;);
+ob_start();
+?&gt;
+
+４８行目付近
+&lt;?php
+$out = ob_get_clean();
+$out = mb_convert_kana($out, &quot;rak&quot;, &quot;UTF-8&quot;);
+$out = mb_convert_encoding($out, &quot;SJIS&quot;, &quot;UTF-8&quot;);
+echo $out;
+?&gt;
+</pre>	
+
+	
+		</P>
+		
+		<h3 id="seven3">7-3</h3>
+		facebookのアプリ認証後真っ白なときはリダイレクトが出来ていない可能性があります。<br>
+		リダイレクト部分をjavascriptで書くと動く場合があります<br>
+<pre>
+echo &lt;&lt;&lt;EOM
+&lt;script language=&quot;JavaScript&quot;&gt;
+&lt;!--
+location.href=&quot;http://paste-reward.info/&quot;;
+//--&gt;
+&lt;/script&gt;
+EOM;
+</pre>
+		
+		
+	</div>
+	
+	<hr>
+	
+	<div class="text">
+		<p>動作環境<br>
+			動作OS：Windows 7<br>
+			ブラウザ:chorome/opera/firefox/safari/IE7.8.9<br>
+			PHP:PHP 5.2.17 (CGI版) 
+		</p>
+	</div>
+</div>
+</body>
+</html>

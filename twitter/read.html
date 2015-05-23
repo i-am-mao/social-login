@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Twitterソーシャルログインの実装</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="wrap">
+	<h1>Twitterソーシャルログインの実装</h1>
+	<hr>
+	<div id="catalog">
+		<h2>目録</h2>
+		<ul>
+			<li><a href="#one">必要なファイル</a></li>
+			<li><a href="#two">Twitterアプリの作成</a></li>
+			<li><a href="#three">getToken.phpの編集</a></li>
+			<li><a href="#four">callback.phpの編集</a></li>
+			<li><a href="#five">リダイレクト先ページを作成</a></li>
+			<li><a href="#six">実行</a></li>
+			<li><a href="#seven">動かないとき</a></li>
+		</ul>
+	</div>
+	<hr>
+	<div id="one" class="text">
+		<h2>１．必要なファイル</h2>
+		<ul>
+			<li>twitter/getToken.php</li>
+			<li>twitter/callback.php</li>
+			<li>twitter/twitteroauth/twitteroauth.php</li>
+			<li>twitter/twitteroauth/OAuth.php</li>
+		</ul>
+		
+		<p>この中で実際に編集するのは、<strong>getToken.php</strong>と<strong>callback.php</strong>です<br>
+			facebookのソーシャルログインよりやや複雑なのでfacebookを先に作成するのをおすすめします</p>
+	</div>
+	<hr>
+	
+	<div id="two" class="text">
+		<h2>２．twitterアプリの作成</h2>
+		<h3>2-1.</h3>
+		<p>
+			ソーシャルログインの実装にはtwitterのアプリを用意する必要があります<br>
+			<a href="https://dev.twitter.com/" target="_blank">https://dev.twitter.com/</a>にアクセスします<br> 
+			<img src="image/2-1.gif" width="600" height="533">
+		</p>
+		
+		<h3>2-2</h3>
+		<p>
+			右上にあるSign inをクリックし、Twitterアカウントでログインします
+			<img src="image/2-2.gif" width="600" height="186">
+			<br />
+			<img src="image/2-2-2.gif" width="600" height="374">
+		</p>
+		
+		<h3>2-3</h3>
+		<p>
+			先ほどのSign inの位置から<strong>My applications</strong>をクリックします
+			<img src="image/2-3.gif" width="600" height="101">
+		</p>
+		
+		
+		<h3>2-4</h3>
+		<p>
+			ログイン後の画面です<br>
+			<strong>Create a new application</strong>をクリックします
+			<img src="image/2-4.gif" width="600" height="408">
+		</p>
+		
+		<h3>2-5</h3><br />
+		必要事項を記入していきます
+			<table>
+				<tr>
+						<th scope="row">Name:</th>
+						<td>アプリの名前</td>
+				</tr>
+				<tr>
+						<th scope="row">Description:</th>
+						<td>アプリの説明</td>
+				</tr>
+				<tr>
+						<th scope="row">Website:</th>
+						<td>アプリを使用するサイトのＵＲＬ</td>
+				</tr>
+				<tr>
+						<th scope="row">Callback URL:</th>
+						<td>今回必須。callback.phpのＵＲＬを入力します<br>
+							http://xx.xxx.jpというサイト名の場合、http://xx.xxx.jp/twitter/callback.phpとなります</td>
+				</tr>
+			</table>
+			<p><img src="image/2-5.gif" width="600" height="1035"></p>
+			
+		<h3 id="ninoroku">2-6</h3>
+			<p>aアプリの設定が表示されたら、画面下部にある<strong>Create my access token</strong>をクリックしてTwitter側の準備は終了です<br>
+			<img src="image/2-6.gif" width="600" height="727"><br>
+
+			Create my access tokenがクリックされた後はこのようになります
+			<img src="image/2-6-2.gif" width="600" height="170">
+			</p>
+	</div>
+
+	<hr>
+	
+	<div id="three" class="text">
+	<h2>３．getToken.phpの編集</h2>
+		
+		<p>getToken.phpはTwitterのログインボタンを押して、処理をするファイルのひとつです<br>
+			書き換えていく部分は<a href="#ninoroku">2-6</a>で表示されている、<br>
+			・Consumer Key<br>
+			・Consumer secret<br>
+			・Callback URL<br>
+			をそれぞれ入力します
+			<img src="image/3.gif" width="423" height="149">
+		</p>
+	</div>
+	
+	<div id="four" class="text">
+		<h2>４．callback.phpの編集</h2>
+			<h3>4-1</h3>
+			<p>getToken.phpと同じように、Consumer KeyとConsumer secretを入力します
+			<img src="image/4-1.gif" width="438" height="114">
+			</p>
+			
+			<h3>4-2</h3>
+			<p>次にリダイレクト先（実際にTwitterのユーザー名等を表示させるページ）を指定します
+			<img src="image/4-2.gif" width="483" height="117">
+			</p>
+	</div>
+	
+	<hr>
+	
+	<div id="five" class="text">
+		<h2>５．リダイレクト先ページを作成</h2>
+			<p>リダイレクト先ページを用意し、以下のＰＨＰを書き込みます<br>
+				セッションを利用しているので他のページへ移動しても表示させることが出来ます				
+<pre>
+&lt;?php
+session_start();
+echo &quot;ようこそ&quot; . $_SESSION['username'].&quot;さん！&lt;br /&gt;&quot;;
+echo &quot;&lt;img src=&quot; . $_SESSION['picture'].&quot;&gt;&quot;;
+?&gt;
+</pre>
+			</p>
+	</div>
+	
+	<div id="six" class="text">
+		<h2>６．実行</h2>
+		<p>getTokes.phpにアクセスすると、許可を求められるページが表示されます
+			<img src="image/6.gif" width="600" height="501">
+			承認するとリダイレクトし、自分のサイトにユーザー名とプロフィール写真が表示されれば完成です！<br>
+		</p>
+	</div>
+	
+	<hr>
+	
+	<div id="seven" class="text">
+		<h2>７．動かないとき</h2>
+		<h3>7-1 アプリ内で設定したコールバックＵＲＬと、getToken.phpは共通して同じものを入力していますか？</h3>
+		<p>異なるＵＲＬを入力すると、許可後に画面が真っ白になってうまくリダイレクトされません</p>
+		
+		<h3>7-2 文字コードを確認</h3>
+		<p>TwitterのソーシャルログインはShift-jisでないと画面が真っ白のまま動かないので、<br>
+			そのようなときは文字コードを確認してみましょう</p>
+	</div>
+	
+	<hr>
+	
+	<div class="text">
+		<p>動作環境<br>
+			動作OS：Windows 7<br>
+			ブラウザ:chorome/opera/firefox/safari/IE7.8.9<br>
+			PHP:PHP 5.2.17 (CGI版)
+			twitteroauth　バージョン0.2.0仕様<br>
+			Twitter API V1.1</p>
+	</div>
+</div>
+</body>
+</html>
